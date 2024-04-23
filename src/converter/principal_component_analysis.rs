@@ -1,26 +1,35 @@
 use std::vec::{self, Vec};
+use ndarray::{Array2, Axis, Zip}; 
+use ndarray::prelude::{ArrayBase,Dim};
 
 pub struct PCA{ 
-    input_matrix: Vec<Vec<f64>>,
+    input_matrix: Array2<f64>,
 }
 
 impl PCA{
-    pub fn new(matrix: Vec<Vec<f64>>)->Self{
+    pub fn new(matrix: Array2<f64>)->Self{
         PCA{ input_matrix: matrix }
     }
-    pub fn calculate_mean(&mut self)-> Option<Vec<Vec<f64>>> {
-        let length = self.input_matrix[0].len();
-        let mut matrix_mean = vec![0.0; 5];
+    pub fn calculate_mean(&mut self) {        
+        let mut matrix_mean: ArrayBase<ndarray::OwnedRepr<f64>, Dim<[usize; 1]>> = self.input_matrix.mean_axis(Axis(0)).unwrap();
 
-        for i in 0..length{
-            matrix_mean[i] = self.input_matrix.iter().map(|row| row[i]).sum::<f64>() / 3.0;
+        // let mut covariance_matrix = Zip::from(&self.input_matrix).and(&matrix_mean).map_collect(|&x,&y| x - y);
+        
+        for i in 0..self.input_matrix.len_of(Axis(0)){
+            print!("{}", matrix_mean[i]);
         }  
 
-        if(length==1){
-            return Some(vec![matrix_mean])
-        }else {
-            return Some(vec![matrix_mean])
-        }
-    }             
+        
+
+        // let mut covarince_matrix = self.input_matrix - matrix_mean;     
+
+        // if(length==1){
+        //     return Some(vec![matrix_mean])
+        // }else {
+        //     return Some(vec![matrix_mean])
+        // }
+    }     
+
+       
 }
     
